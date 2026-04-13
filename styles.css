@@ -332,17 +332,61 @@ select, input, textarea { font-family: inherit; }
    VALUES
 =========================== */
 .values { padding: 96px 0; background: var(--beige); }
-.values-grid { display: flex; flex-wrap: wrap; gap: 24px; justify-content: center; }
+
+/* Desktop: grid fixo 3 colunas, sem carrossel */
+.values-wrapper {
+    padding: 0 !important;
+    overflow: visible !important;
+}
+.values-wrapper .carousel-btn,
+.values-wrapper .carousel-dots { display: none !important; }
+
+.values-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+.values-grid.is-carousel {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    flex-wrap: unset !important;
+    transform: none !important;
+}
+
 .value-card {
     background: var(--white); border-radius: var(--radius-lg);
     padding: 32px 24px; text-align: center; border: 1px solid var(--border);
     transition: box-shadow var(--transition), transform var(--transition);
-    flex-shrink: 0; width: calc((100% - 24px) / 2);
+    width: 100% !important; flex-shrink: unset;
 }
 .value-card:hover { box-shadow: var(--shadow-md); transform: translateY(-4px); }
 .value-icon { font-size: 2.2rem; margin-bottom: 14px; }
 .value-card h3 { font-size: .98rem; font-weight: 700; margin-bottom: 8px; color: var(--dark); }
 .value-card p { font-size: .85rem; color: var(--muted); line-height: 1.6; }
+
+/* Mobile: drag carousel */
+@media (max-width: 700px) {
+    .values-wrapper {
+        overflow: hidden !important;
+        padding: 0 !important;
+        cursor: grab;
+    }
+    .values-wrapper:active { cursor: grabbing; }
+    .values-grid,
+    .values-grid.is-carousel {
+        display: flex !important;
+        grid-template-columns: unset !important;
+        flex-wrap: nowrap !important;
+        gap: 16px;
+        transition: transform 0.3s ease;
+    }
+    .value-card {
+        min-width: 80vw !important;
+        width: 80vw !important;
+        flex-shrink: 0 !important;
+    }
+    .values-wrapper .carousel-dots { display: flex !important; }
+}
 
 /* ===========================
    CLUB TIERS
@@ -495,9 +539,12 @@ select, input, textarea { font-family: inherit; }
     .footer-top { grid-template-columns: 1fr; gap: 28px; }
     .footer-bottom { flex-direction: column; align-items: center; gap: 10px; text-align: center; }
     .compliance-seals { grid-template-columns: 1fr 1fr; }
-    .snacks-carousel-wrapper, .plans-wrapper, .values-wrapper { padding: 0; }
-    .snack-card, .plan-card, .value-card { width: 100%; }
-    .carousel-btn, .carousel-dots { display: none; }
+    .snacks-carousel-wrapper, .plans-wrapper { padding: 0; }
+    .snack-card, .plan-card { width: 100%; }
+    .snacks-carousel-wrapper .carousel-btn,
+    .snacks-carousel-wrapper .carousel-dots,
+    .plans-wrapper .carousel-btn,
+    .plans-wrapper .carousel-dots { display: none; }
 }
 
 @media (max-width: 480px) {
