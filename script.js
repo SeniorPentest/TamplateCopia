@@ -31,6 +31,7 @@ function initCarousel() {
     const totalSlides = cards.length;
     const carouselMobileBreakpoint = 700;
     const mobileQuery = window.matchMedia(`(max-width: ${carouselMobileBreakpoint}px)`);
+    let autoplayId = null;
 
     // Create dots
     if (dotsContainer) {
@@ -63,7 +64,7 @@ function initCarousel() {
 
         // Update button states
         if (prevBtn) prevBtn.disabled = mobileQuery.matches || currentSlide === 0;
-        if (nextBtn) nextBtn.disabled = mobileQuery.matches || currentSlide === totalSlides - 1;
+        if (nextBtn) nextBtn.disabled = mobileQuery.matches;
     }
 
     function goToSlide(index) {
@@ -72,10 +73,8 @@ function initCarousel() {
     }
 
     function nextSlide() {
-        if (currentSlide < totalSlides - 1) {
-            currentSlide++;
-            updateCarousel();
-        }
+        currentSlide = currentSlide < totalSlides - 1 ? currentSlide + 1 : 0;
+        updateCarousel();
     }
 
     function prevSlide() {
@@ -92,8 +91,27 @@ function initCarousel() {
     // Handle window resize
     window.addEventListener('resize', updateCarousel);
 
+    // Autoplay with hover pause
+    const startAutoplay = () => {
+        if (autoplayId) clearInterval(autoplayId);
+        if (totalSlides > 1) {
+            autoplayId = setInterval(nextSlide, 3000);
+        }
+    };
+
+    const stopAutoplay = () => {
+        if (autoplayId) {
+            clearInterval(autoplayId);
+            autoplayId = null;
+        }
+    };
+
+    carouselWrapper.addEventListener('mouseenter', stopAutoplay);
+    carouselWrapper.addEventListener('mouseleave', startAutoplay);
+
     // Initial update
     updateCarousel();
+    startAutoplay();
 }
 
 // ===========================
